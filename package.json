@@ -1,0 +1,13 @@
+{
+  "name": "notion-parse",
+  "version": "1.0.0",
+  "description": "Parser for Notion MD to convert into a simple HTML document",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parse": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
