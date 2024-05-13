@@ -1,4 +1,6 @@
+const { marked } = require('marked');
 const fs = require('fs');
+const path = require('path');
 
 const filePath = process.argv[2];
 
@@ -11,13 +13,24 @@ if (filePath) {
 }
 
 function readMarkdown(filePath) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
+  fs.readFile(filePath, 'utf8', (err, fileData) => {
     if (err) {
       console.error('Error reading file:', err);
       return;
     }
+    const htmlString = marked.parse(fileData);
 
-    // Log the content of the file
-    console.log(data);
+    const parsedPath = path.parse(filePath);
+    const outputPath = path.join(parsedPath.dir, parsedPath.name + '.html');
+    writeHTML(outputPath, htmlString)
+  });
+}
+
+function writeHTML(filePath, htmlString) {
+  fs.writeFile(filePath, htmlString, (err) => {
+    if (err) {
+      console.error('Error writing to file:', err);
+      return;
+    }
   });
 }
