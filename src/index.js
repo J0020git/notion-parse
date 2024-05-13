@@ -7,7 +7,6 @@ const filePath = process.argv[2];
 
 // Check if a file path was provided
 if (filePath) {
-  console.log("File path:", filePath);
   readMarkdown(filePath);
 } else {
   console.error("No file name provided.");
@@ -28,13 +27,17 @@ function readMarkdown(filePath) {
 }
 
 function writeHTML(filePath, htmlBody) {
+  // Get the title as the first <h1> tags
+  const title = htmlBody.match(/<h1>(.*?)<\/h1>/)[1];
+  htmlBody = htmlBody.replace('<h1>', '<h1 id="title">');
+
   const htmlString =
   `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title</title>
+    <title>${title}</title>
   </head>
   <body>
     ${htmlBody}
