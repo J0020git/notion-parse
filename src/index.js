@@ -1,7 +1,7 @@
 const { marked } = require("marked");
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
-const beautify = require('js-beautify').html;
+const beautify = require("js-beautify").html;
 
 const filePath = process.argv[2];
 
@@ -13,43 +13,61 @@ if (filePath) {
 }
 
 function readMarkdown(filePath) {
-  fs.readFile(filePath, "utf8", (err, fileData) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return;
-    }
-    const htmlBody = marked.parse(fileData);
+  fs.readFile(filePath, "utf8")
+    .then(fileData => {
+      const htmlBody = marked.parse(fileData);
 
-    const parsedPath = path.parse(filePath);
-    const outputPath = path.join(parsedPath.dir, parsedPath.name + ".html");
-    writeHTML(outputPath, htmlBody);
-  });
+      const parsedPath = path.parse(filePath);
+      const outputPath = path.join(parsedPath.dir, parsedPath.name + ".html");
+      writeHTML(outputPath, htmlBody);
+    })
+    .catch(err => {
+      console.error("Error reading file:", err);
+      throw err;
+    });
 }
 
-function writeHTML(filePath, htmlBody) {
-  // Get the title as the first <h1> tags
-  const title = htmlBody.match(/<h1>(.*?)<\/h1>/)[1];
-  htmlBody = htmlBody.replace('<h1>', '<h1 id="title">');
+function readStylesheet(style) {
+  return fs.readFile(`src\\styles\\${style}.css`, "utf8")
+    .then(fileData => {
+      return fileData;
+    })
+    .catch(err => {
+      console.error("Error reading stylesheet:", err);
+      throw err;
+    });
+}
 
-  const htmlString =
-  `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-  </head>
-  <body>
-    ${htmlBody}
-  </body>
-  </html>`;
+async function writeHTML(filePath, htmlBody) {
+  try {
+    // Get the title as the first <h1> tags
+    const title = htmlBody.match(/<h1>(.*?)<\/h1>/)[1];
+    htmlBody = htmlBody.replace("<h1>", '<h1 id="title">');
 
-  const formattedHtml = beautify(htmlString, { indent_size: 2 });
+    // Get CSS styling and apply it through HTML <style> tag
+    const style = await readStylesheet("notionlike");
+    
+    const htmlString = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${title}</title>
+      <style>${style}</style>
+    </head>
+    <body>
+      ${htmlBody}
+    </body>
+    </html>`;
 
-  fs.writeFile(filePath, formattedHtml, (err) => {
-    if (err) {
-      console.error("Error writing to file:", err);
-      return;
-    }
-  });
+    const formattedHtml = beautify(htmlString, { indent_size: 2 });
+
+    fs.writeFile(filePath, formattedHtml)
+      .catch(err => {
+        console.error("Error writing to file:", err);
+        throw err;
+      });
+  } catch (err) {
+    console.error("Error parsing to HTML:", err);
+  }
 }
