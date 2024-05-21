@@ -19,12 +19,8 @@ h1, h2, li, aside, p {
     color: #3C3C3C;
 }
 
-h1, h2 {
+h1, h2, ul, li, aside, pre {
     margin: 16px 0px;
-}
-
-ul, li, aside {
-    margin: 8px 0px;
 }
 
 ul {
@@ -47,8 +43,16 @@ h2 {
     font-weight: 600;
 }
 
-aside {
+p > code {
+    color: #EB5757;
     background-color: #F1F1EF;
     border-radius: 4px;
-    padding: 24px 16px;
+    padding: 0px 4px;
+
+}
+
+aside, pre {
+    background-color: #F1F1EF;
+    border-radius: 4px;
+    padding: 24px;
 }

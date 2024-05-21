@@ -1,4 +1,6 @@
 const { marked } = require("marked");
+const { markedHighlight } = require('marked-highlight');
+const hljs = require('highlight.js');
 const fs = require("fs").promises;
 const path = require("path");
 const beautify = require("js-beautify").html;
@@ -15,6 +17,13 @@ if (filePath) {
 function readMarkdown(filePath) {
   fs.readFile(filePath, "utf8")
     .then(fileData => {
+      // Configure marked to use highlighting
+      marked.use(markedHighlight({
+        highlight: (code, lang) => {
+          return hljs.highlightAuto(code, [lang]).value;
+        }
+      }));
+
       const htmlBody = marked.parse(fileData);
 
       const parsedPath = path.parse(filePath);
@@ -54,6 +63,7 @@ async function writeHTML(filePath, htmlBody) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${title}</title>
       <style>${style}</style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     </head>
     <body>
       ${htmlBody}

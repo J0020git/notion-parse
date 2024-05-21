@@ -32,14 +32,12 @@
     }
 
     h1,
-    h2 {
-      margin: 16px 0px;
-    }
-
+    h2,
     ul,
     li,
-    aside {
-      margin: 8px 0px;
+    aside,
+    pre {
+      margin: 16px 0px;
     }
 
     ul {
@@ -62,12 +60,22 @@
       font-weight: 600;
     }
 
-    aside {
+    p>code {
+      color: #EB5757;
       background-color: #F1F1EF;
       border-radius: 4px;
-      padding: 24px 16px;
+      padding: 0px 4px;
+
+    }
+
+    aside,
+    pre {
+      background-color: #F1F1EF;
+      border-radius: 4px;
+      padding: 24px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 
 <body>
@@ -91,7 +99,7 @@
     </li>
   </ul>
   <h2>Heading 2</h2>
-  <pre><code class="language-jsx">console.log(&quot;Javascript code&quot;)
+  <pre><code class="language-jsx"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;Javascript code&quot;</span>)
 </code></pre>
   <p>Plain text, <code>code text</code></p>
   <ul>
